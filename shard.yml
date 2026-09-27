@@ -1,0 +1,17 @@
+name: volume_control
+version: 0.1.0
+
+authors:
+  - Guilherme Ribeiro <devguilhermeribeiro000@proton.me>
+
+targets:
+  volume_control:
+    main: src/volume_control.cr
+
+crystal: '>= 1.21.0'
+
+license: MIT
+
+dependencies:
+  kemal:
+    github: kemalcr/kemal
