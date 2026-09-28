@@ -1,11 +1,76 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Controle de Volume</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.9/dist/cdn.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style type="text/tailwindcss">
+  @layer components {
+    .body {
+      @apply bg-black min-h-screen flex items-center justify-center p-6;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .form {
+      @apply bg-black border-2 border-yellow-400 rounded-2xl p-8 w-full max-w-sm flex flex-col gap-4 shadow-[0_0_30px_rgba(250,204,21,0.15)];
+    }
+
+    .title {
+      @apply text-white text-2xl font-bold text-center mb-2;
+    }
+
+    .btn {
+      @apply font-semibold py-3 rounded-lg transition active:scale-95;
+    }
+
+    .btn-up {
+      @apply bg-yellow-400 text-black hover:bg-yellow-300;
+    }
+
+    .btn-down {
+      @apply bg-white text-black hover:bg-gray-200;
+    }
+
+    .btn-mute {
+      @apply bg-black text-yellow-400 border-2 border-yellow-400 hover:bg-yellow-400 hover:text-black;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('alpine:init', () => {
+    Alpine.data('volume', () => ({
+      async send(command) {
+        try {
+          const res = await fetch('/command', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ command }),
+          });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        } catch (err) {
+          console.error(`Falha ao enviar "${command}":`, err);
+        }
+      },
+    }));
+  });
+</script>
 </head>
-<body>
-  
+<body class="body">
+
+  <form class="form" x-data="volume">
+    <h1 class="title">Controle de Volume</h1>
+
+    <button type="button" class="btn btn-up" @click="send('volume-up')">Aumentar volume</button>
+    <button type="button" class="btn btn-down" @click="send('volume-down')">Diminuir volume</button>
+    <button type="button" class="btn btn-mute" @click="send('mute')">Mutar</button>
+  </form>
+
 </body>
 </html>
